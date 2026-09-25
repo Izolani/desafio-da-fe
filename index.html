@@ -208,15 +208,19 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       border: 1px solid rgba(212, 175, 55, 0.4);
     }
 
-    .church-logo {
+    .church-logo,
+    .church-logo-svg {
       height: 64px;
+      width: auto;
       max-width: 250px;
       object-fit: contain;
       display: block;
     }
 
-    .church-logo.small {
+    .church-logo.small,
+    .church-logo-svg.small {
       height: 42px;
+      width: auto;
       max-width: 170px;
     }
 
@@ -708,8 +712,46 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       color: #7b94b5;
     }
   </style>
+  <script>
+    /* Sistema de fallback da logo em 3 níveis */
+    function handleLogoError(img) {
+      const stage = parseInt(img.dataset.stage || '1', 10);
+      if (stage === 1) {
+        // NÍVEL 2 - etapa A: tentar logo.jpeg local
+        img.dataset.stage = '2';
+        img.src = 'logo.jpeg';
+      } else if (stage === 2) {
+        // NÍVEL 2 - etapa B: tentar logo.png local
+        img.dataset.stage = '3';
+        img.src = 'logo.png';
+      } else {
+        // NÍVEL 3 (garantia): réplica fiel em SVG inline embutido
+        img.onerror = null;
+        const isSmall = img.classList.contains('small');
+        const tmpl = document.getElementById('church-logo-template');
+        if (tmpl && tmpl.content && tmpl.content.firstElementChild) {
+          const svg = tmpl.content.firstElementChild.cloneNode(true);
+          if (isSmall) svg.classList.add('small');
+          img.parentNode.replaceChild(svg, img);
+        }
+      }
+    }
+  </script>
 </head>
 <body>
+  <!-- Réplica fiel da logo em SVG inline (definida uma única vez no código) -->
+  <template id="church-logo-template">
+    <svg class="church-logo-svg" viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Igreja Evangélica Cristo Vive de Paracambi">
+      <rect width="240" height="180" fill="#ffffff" rx="8"/>
+      <text x="120" y="48" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#0a2a4a" letter-spacing="2.5" text-anchor="middle">IGREJA EVANGÉLICA</text>
+      <text x="120" y="98" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="33" font-weight="900" fill="#083a74" letter-spacing="-0.5" text-anchor="middle">CRISTOVIVE</text>
+      <g transform="translate(108, 122)">
+        <rect width="118" height="32" rx="5" fill="#083a74"/>
+        <text x="59" y="21" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">De Paracambi</text>
+      </g>
+    </svg>
+  </template>
+
   <canvas id="confetti-canvas"></canvas>
 
   <main class="main-wrap">
@@ -718,9 +760,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <div class="logo-container">
         <div class="logo-badge">
           <img class="church-logo"
-            src="https://adapta-one-prod.s3.sa-east-1.amazonaws.com/alan.izolani%40gmail.com/png/image-01a0d368-1097-73ed-9563-71098792b118.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA3FLD6RMYLYFE2L2Q%2F20260924%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260924T124340Z&X-Amz-Expires=3600&X-Amz-Signature=773a0354f1c32daa861c98eca622eebaa3fa1066f6d22dbb4ce980d406fac5fe&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+            src="https://adapta-one-prod.s3.sa-east-1.amazonaws.com/alan.izolani%40gmail.com/png/image-01a0daa1-165c-738d-a986-e1b1bada8516.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA3FLD6RMYLYFE2L2Q%2F20260925%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260925T222420Z&X-Amz-Expires=3600&X-Amz-Signature=ddfcbc9347bdd58fdbcc7999c457dc1e583751cf2bf664f49a4f3cba3f90faa1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
             alt="Igreja Evangélica Cristo Vive de Paracambi"
-            onerror="this.onerror=null;this.src='logo.png';">
+            onerror="handleLogoError(this);">
         </div>
       </div>
 
@@ -763,9 +805,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <div class="game-top-bar">
         <div class="logo-badge" style="padding: 0.35rem 0.8rem; margin: 0;">
           <img class="church-logo small"
-            src="https://adapta-one-prod.s3.sa-east-1.amazonaws.com/alan.izolani%40gmail.com/png/image-01a0d368-1097-73ed-9563-71098792b118.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA3FLD6RMYLYFE2L2Q%2F20260924%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260924T124340Z&X-Amz-Expires=3600&X-Amz-Signature=773a0354f1c32daa861c98eca622eebaa3fa1066f6d22dbb4ce980d406fac5fe&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+            src="https://adapta-one-prod.s3.sa-east-1.amazonaws.com/alan.izolani%40gmail.com/png/image-01a0daa1-165c-738d-a986-e1b1bada8516.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA3FLD6RMYLYFE2L2Q%2F20260925%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260925T222420Z&X-Amz-Expires=3600&X-Amz-Signature=ddfcbc9347bdd58fdbcc7999c457dc1e583751cf2bf664f49a4f3cba3f90faa1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
             alt="Logo Cristo Vive"
-            onerror="this.onerror=null;this.src='logo.png';">
+            onerror="handleLogoError(this);">
         </div>
         <div class="score-counter">
           Pontos: <strong id="game-score">0</strong>
@@ -817,9 +859,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <div class="logo-container">
         <div class="logo-badge">
           <img class="church-logo"
-            src="https://adapta-one-prod.s3.sa-east-1.amazonaws.com/alan.izolani%40gmail.com/png/image-01a0d368-1097-73ed-9563-71098792b118.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA3FLD6RMYLYFE2L2Q%2F20260924%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260924T124340Z&X-Amz-Expires=3600&X-Amz-Signature=773a0354f1c32daa861c98eca622eebaa3fa1066f6d22dbb4ce980d406fac5fe&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+            src="https://adapta-one-prod.s3.sa-east-1.amazonaws.com/alan.izolani%40gmail.com/png/image-01a0daa1-165c-738d-a986-e1b1bada8516.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA3FLD6RMYLYFE2L2Q%2F20260925%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260925T222420Z&X-Amz-Expires=3600&X-Amz-Signature=ddfcbc9347bdd58fdbcc7999c457dc1e583751cf2bf664f49a4f3cba3f90faa1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
             alt="Logo Cristo Vive"
-            onerror="this.onerror=null;this.src='logo.jpeg';">
+            onerror="handleLogoError(this);">
         </div>
       </div>
 
